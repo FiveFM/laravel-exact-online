@@ -36,6 +36,7 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
 
             // Store user ID in session for later use
             if (Auth::check()) {
+                \Log::info('User is logged in');
                 session(['user_id' => Auth::id()]);
             }
 
