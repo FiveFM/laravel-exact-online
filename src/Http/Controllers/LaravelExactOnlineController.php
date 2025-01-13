@@ -5,7 +5,7 @@ namespace Fivefm\LaravelExactOnline\Http\Controllers;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Websmurf\LaravelExactOnline\LaravelExactOnline;
+use Fivefm\LaravelExactOnline\LaravelExactOnline;
 use Illuminate\Support\Facades\Auth;
 
 class LaravelExactOnlineController extends Controller
