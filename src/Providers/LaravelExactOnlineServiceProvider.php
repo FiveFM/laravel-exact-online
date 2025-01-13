@@ -3,15 +3,20 @@
 namespace Fivefm\LaravelExactOnline\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Picqer\Financials\Exact\Connection;
 use Fivefm\LaravelExactOnline\LaravelExactOnline;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LaravelExactOnlineServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
+     *
+     * @return void
      */
-    public function boot(): void
+    public function boot()
     {
         $this->loadRoutesFrom(__DIR__ . '/../Http/routes.php');
 
@@ -20,43 +25,55 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../views' => base_path('resources/views/vendor/laravelexactonline'),
             __DIR__ . '/../exact.api.json' => storage_path('exact.api.json'),
-            __DIR__ . '/../config/laravel-exact-online.php' => config_path('laravel-exact-online.php'),
+            __DIR__ . '/../config/laravel-exact-online.php' => config_path('laravel-exact-online.php')
         ]);
     }
 
     /**
      * Register the application services.
+     *
+     * @return void
      */
-    public function register(): void
+    public function register()
     {
         $this->app->alias(LaravelExactOnline::class, 'laravel-exact-online');
 
-        $this->app->singleton('Exact\Connection', static function () {
+        $this->app->singleton('Exact\Connection', function () {
+
             $config = LaravelExactOnline::loadConfig();
 
-            $connection = new Connection();
-            $connection->setRedirectUrl(route('exact.callback'));
+            $connection = new \Picqer\Financials\Exact\Connection();
+            //            $rand = Crypt::encryptString(Auth::user()->id);
+            $connection->setRedirectUrl(route('exact.callback', ['user' => Auth::user()->id]));
             $connection->setExactClientId(config('laravel-exact-online.exact_client_id'));
             $connection->setExactClientSecret(config('laravel-exact-online.exact_client_secret'));
             $connection->setBaseUrl('https://start.exactonline.' . config('laravel-exact-online.exact_country_code'));
 
-            if (config('laravel-exact-online.exact_division') !== '') {
-                $connection->setDivision(config('laravel-exact-online.exact_division'));
+            if (isset($config->company_id)) {
+                $connection->setDivision($config->company_id);
             }
 
-            if (isset($config->exact_authorisationCode)) {
-                $connection->setAuthorizationCode($config->exact_authorisationCode);
+            if (isset($config->authorisationCode)) {
+                $connection->setAuthorizationCode($config->authorisationCode);
             }
 
-            // Init connection items (just as when the token is refreshed)
-            LaravelExactOnline::tokenRefreshCallback($connection);
+            if (isset($config->accessToken)) {
+                $connection->setAccessToken(unserialize($config->accessToken));
+            }
 
-            $connection->setTokenUpdateCallback([LaravelExactOnline::class, 'tokenUpdateCallback']);
-            $connection->setRefreshAccessTokenCallback([LaravelExactOnline::class, 'tokenRefreshCallback']);
-            $connection->setAcquireAccessTokenLockCallback([LaravelExactOnline::class, 'acquireLock']);
-            $connection->setAcquireAccessTokenUnlockCallback([LaravelExactOnline::class, 'releaseLock']);
+            if (isset($config->refreshToken)) {
+                $connection->setRefreshToken($config->refreshToken);
+            }
+            if (isset($config->tokenExpires)) {
+                $connection->setTokenExpires($config->tokenExpires);
+            }
+            $connection->setTokenUpdateCallback('\App\Exact::tokenUpdateCallback');
 
-            $connection->connect();
+            try {
+                $connection->connect();
+            } catch (\Exception $e) {
+                throw new \Exception('Could not connect to Exact: ' . $e->getMessage());
+            }
 
             return $connection;
         });

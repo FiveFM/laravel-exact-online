@@ -9,17 +9,29 @@ to the API easily. Authorisation and refresh tokens are saved automatically.
 your platform need access to Exact Online for a single user! This set of code may be used to communicate with
 a single Exact Online user's administration.
 
+#### First draft - do not use!
+
+So far, this package is just a draft. So use at own risk. We're currently working on a project to see if
+it provides all functions we need. If you intend to use this package, please see below for instructions and
+what functions you may use.
+
 ## Installation
 
-Require the package
+First add the dev-master version of this package to your composer.json
 
 ```
-composer require fivefm/laravel-exact-online
+"Fivefm/laravel-exact-online": "dev-master"
 ```
 
-Because of the auto package discovery feature Laravel > 5.5 has, the ServiceProvider and Facades are automatically registered.
+Then run `composer update` and add the Service Provider to config/app.php (For L5.5 and up Auto-Discovery is enabled)
 
-Add the Facade to your config/app.php
+```
+...
+Fivefm\LaravelExactOnline\Providers\LaravelExactOnlineServiceProvider::class,
+...
+```
+
+In the same file, add the Facade
 
 ```
 ...
@@ -86,9 +98,9 @@ You may also edit the views to your liking, after publishing they can be found u
 
 ##### Step 1: connect & authorise
 
-Visit http://your-project.local/exact/connect, you will be presented a submit button to go to
+Visit http://your-project.dev/exact/connect, you will be presented a submit button to go to
 Exact Online. Once there, login and approve the app. After this you will be returned do
-http://your-project.local/exact/oauth, this route takes care of saving the needed tokens for
+http://your-project.dev/exact/oauth, this route takes care of saving the needed tokens for
 future requests.
 
 ##### Step 2: use the Facade
@@ -115,25 +127,15 @@ $account = new Account($connection);
 dd($account->get());
 ```
 
-Using Dependency Injection, you can request an instance that already creates connection instance for you:
+Using the Facade, we tried to make things easy, for instance getting a list of accounts:
 
 ```php
-function handle (\Fivefm\LaravelExactOnline\LaravelExactOnline $exactOnline) {
-    // List all accounts
-    $exactOnline->Account()->get();
-
-    // Get specific account:
-    $exactOnline->Account()->find('account_ID');
-}
+ExactOnline::Account()->get();
 ```
 
-Or if you prefer using the Facade, you can do that as well:
+Or finding a specific account:
 
 ```php
-// List all accounts
-ExactOnline::Account()->get();
-
-// Get specific account:
 ExactOnline::Account()->find('account_ID');
 ```
 
@@ -141,22 +143,12 @@ All methods that change the connection are camelCased and prefixed with connecti
 example if you want to change the baseUrl of the API you would call:
 
 ```php
-$exactOnline->connectionSetBaseUrl('http://start.exactonline.de')
-
-// or:
-
 ExactOnline::connectionSetBaseUrl('http://start.exactonline.de');
 ```
 
 Of course everything is chainable for readability:
 
 ```php
-$exactOnline->connectionSetBaseUrl('http://start.exactonline.de')
-    ->Account()
-    ->find('account_ID')
-
-// or:
-
 ExactOnline::connectionSetBaseUrl('http://start.exactonline.de')
     ->Account()
     ->find('account_ID');
@@ -165,11 +157,14 @@ ExactOnline::connectionSetBaseUrl('http://start.exactonline.de')
 ## Credits
 
 - [Picqer/exact-php-client](https://github.com/picqer/exact-php-client)
-- [PendoNL/laravel-exact-online](https://github.com/PendoNL/laravel-exact-online)
 
 ## Security
 
-If you discover any security related issues, please email adam@bandhosting.nl instead of using the issue tracker.
+If you discover any security related issues, please email joshua@pendo.nl instead of using the issue tracker.
+
+## About Pendo
+
+Pendo is a webdevelopment agency based in Maastricht, Netherlands. If you'd like, you can [visit our website](https://pendo.nl).
 
 ## License
 

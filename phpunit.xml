@@ -10,7 +10,7 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="Test Suite">
+        <testsuite name="Pendo Test Suite">
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
