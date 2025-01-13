@@ -29,8 +29,8 @@ class LaravelExactOnlineController extends Controller
             \Log::info('Session data: ' . json_encode(Session::all()));
             abort(401, 'User session expired. Please restart the authorization process.');
         }
-
-        Auth::loginUsingId(decrypt($session));
+        \Log::info('User session: ' . decrypt($session));
+        // Auth::loginUsingId(decrypt($session));
 
         $config = LaravelExactOnline::loadConfig();
         $config->authorisationCode = request()->get('code');
