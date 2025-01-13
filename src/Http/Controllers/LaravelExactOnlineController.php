@@ -17,21 +17,53 @@ class LaravelExactOnlineController extends Controller
     public function appAuthorize()
     {
         $connection = app()->make('Exact\Connection');
-        return ['url' => $connection->getAuthUrl()];
+        $userId = Auth::id();
+
+        if (!$userId) {
+            \Log::error('User not logged in');
+            return redirect()->route('exact.connect')->withErrors('Session expired. Please start again.');
+        }
+
+        // Generate and store the state
+        $state = encrypt(json_encode([
+            'user_id' => $userId,
+            'timestamp' => now()->timestamp,
+        ]));
+        session(['oauth_state' => $state]); // Store the state in the session for validation
+
+        // Append the state to the auth URL
+        $authUrl = $connection->getAuthUrl() . '&state=' . urlencode($state);
+
+        return ['url' => $authUrl];
     }
+
 
     public function appCallback()
     {
-        // Retrieve the user ID from the session
-        $session = request()->cookie('easykas_session');
-        if (!$session) {
-            \Log::error('User session (already) expired. Please restart the authorization process. userId: ' . $userId);
-            \Log::info('Session data: ' . json_encode(Session::all()));
-            abort(401, 'User session expired. Please restart the authorization process.');
-        }
-        \Log::info('User session: ' . decrypt($session));
-        // Auth::loginUsingId(decrypt($session));
+        $state = request('state');
 
+        if (!$state || $state !== session('oauth_state')) {
+            \Log::error('Invalid state: ' . $state);
+            return redirect()->route('exact.connect')->withErrors('Session expired. Please start again.');
+        }
+
+        // Decrypt the state to get the original data
+        $decodedState = json_decode(decrypt($state), true);
+
+        if (!$decodedState || !isset($decodedState['user_id'])) {
+            \Log::error('Invalid state: ' . $state);
+            return redirect()->route('exact.connect')->withErrors('Session expired. Please start again.');
+        }
+
+        $userId = $decodedState['user_id'];
+
+        // Log the user in using the user ID
+        Auth::loginUsingId($userId);
+
+        // Clear the state from the session to prevent reuse
+        session()->forget('oauth_state');
+
+        // Save the authorization code
         $config = LaravelExactOnline::loadConfig();
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);

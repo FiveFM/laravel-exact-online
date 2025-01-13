@@ -4,8 +4,6 @@ namespace Fivefm\LaravelExactOnline\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Fivefm\LaravelExactOnline\LaravelExactOnline;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class LaravelExactOnlineServiceProvider extends ServiceProvider
 {
@@ -33,13 +31,6 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
             $connection->setExactClientId(config('laravel-exact-online.exact_client_id'));
             $connection->setExactClientSecret(config('laravel-exact-online.exact_client_secret'));
             $connection->setBaseUrl('https://start.exactonline.' . config('laravel-exact-online.exact_country_code'));
-
-            // Store user ID in session for later use
-            if (Auth::check()) {
-                $state = encrypt(Auth::id());
-                session(['oauth_state' => $state]);
-                \Log::info('State stored in session: ' . $state);
-            }
 
             if (isset($config->company_id)) {
                 $connection->setDivision($config->company_id);
