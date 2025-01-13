@@ -25,6 +25,7 @@ class LaravelExactOnlineController extends Controller
         // Retrieve the user ID from the session
         $userId = session('user_id');
         if (!$userId) {
+            \Log::error('User session (already) expired. Please restart the authorization process. userId: ' . $userId);
             abort(401, 'User session expired. Please restart the authorization process.');
         }
 
