@@ -38,19 +38,24 @@ class LaravelExactOnlineController extends Controller
      */
     public function appCallback()
     {
-
-        //        $id = Crypt::decryptString(request()->get('user'));
         Auth::shouldUse('web');
         Auth::loginUsingId(request()->get('user'));
 
         $config = LaravelExactOnline::loadConfig();
-        dd($config);
+        dd([
+            'user' => request()->get('user'),
+            'code' => request()->get('code'),
+            'config_before' => $config
+        ]);
+
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
+
+        $config_after = LaravelExactOnline::loadConfig();
+        dd(['config_after' => $config_after]);
 
         $connection = app()->make('Exact\Connection');
         session(['user' => request()->get('user')]);
         return redirect()->route('exact.form');
-        //        return redirect("easykas://return");
     }
 }
