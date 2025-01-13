@@ -1,6 +1,6 @@
 <?php
 
-namespace Websmurf\LaravelExactOnline\Http\Controllers;
+namespace Fivefm\LaravelExactOnline\Http\Controllers;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
