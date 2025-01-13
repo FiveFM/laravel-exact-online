@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Websmurf\LaravelExactOnline\LaravelExactOnline;
+use Illuminate\Support\Facades\Auth;
 
 class LaravelExactOnlineController extends Controller
 {
@@ -37,20 +38,19 @@ class LaravelExactOnlineController extends Controller
      */
     public function appCallback()
     {
-        $config = LaravelExactOnline::loadConfig();
-        $config->exact_authorisationCode = request()->get('code');
 
-        // Store first to avoid another redirect to exact online
+        //        $id = Crypt::decryptString(request()->get('user'));
+        Auth::shouldUse('web');
+        Auth::loginUsingId(request()->get('user'));
+
+        $config = LaravelExactOnline::loadConfig();
+
+        $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
         $connection = app()->make('Exact\Connection');
-
-        $config->exact_accessToken = serialize($connection->getAccessToken());
-        $config->exact_refreshToken = $connection->getRefreshToken();
-        $config->exact_tokenExpires = $connection->getTokenExpires() - 60;
-
-        LaravelExactOnline::storeConfig($config);
-
-        return view('laravelexactonline::connected', ['connection' => $connection]);
+        session(['user' => request()->get('user')]);
+        return redirect()->route('exact.form');
+        //        return redirect("easykas://return");
     }
 }
