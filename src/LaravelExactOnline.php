@@ -1,6 +1,6 @@
 <?php
 
-namespace Websmurf\LaravelExactOnline;
+namespace Fivefm\LaravelExactOnline;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Cache\Lock;
@@ -15,7 +15,7 @@ use function json_decode;
 use function json_encode;
 
 /**
- * @package Websmurf\LaravelExactOnline
+ * @package Fivefm\LaravelExactOnline
  *
  * @method \Picqer\Financials\Exact\AbsenceRegistration AbsenceRegistration(array $attributes = [])
  * @method \Picqer\Financials\Exact\AbsenceRegistrationTransaction AbsenceRegistrationTransaction(array $attributes = [])

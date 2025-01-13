@@ -1,8 +1,5 @@
 <?php
 
-#use Websmurf\LaravelExactOnline\LaravelExactOnline as LaravelExactOnline;
+#use Fivefm\LaravelExactOnline\LaravelExactOnline as LaravelExactOnline;
 
-class LaravelExactOnlineConnectionTest extends \PHPUnit\Framework\TestCase
-{
-
-}
+class LaravelExactOnlineConnectionTest extends \PHPUnit\Framework\TestCase {}

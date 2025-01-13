@@ -1,5 +1,5 @@
 {
-  "name": "websmurf/laravel-exact-online",
+  "name": "fivefm/laravel-exact-online",
   "description": "Laravel Facade wrapper for Exact Online PHP API",
   "require": {
     "picqer/exact-php-client": "^3.1|^4.0",
@@ -24,12 +24,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "Websmurf\\LaravelExactOnline\\": "src/"
+      "Fivefm\\LaravelExactOnline\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Websmurf\\LaravelExactOnline\\Test\\": "tests"
+      "Fivefm\\LaravelExactOnline\\Test\\": "tests"
     }
   },
   "config": {
@@ -43,10 +43,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Websmurf\\LaravelExactOnline\\Providers\\LaravelExactOnlineServiceProvider"
+        "Fivefm\\LaravelExactOnline\\Providers\\LaravelExactOnlineServiceProvider"
       ],
       "aliases": {
-        "ExactOnline": "Websmurf\\LaravelExactOnline\\LaravelExactOnlineFacade"
+        "ExactOnline": "Fivefm\\LaravelExactOnline\\LaravelExactOnlineFacade"
       }
     }
   }

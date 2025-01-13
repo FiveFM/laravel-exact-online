@@ -1,6 +1,6 @@
 <?php
 
-namespace Websmurf\LaravelExactOnline;
+namespace Fivefm\LaravelExactOnline;
 
 use Illuminate\Support\Facades\Facade;
 

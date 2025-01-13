@@ -1,5 +1,6 @@
 # Laravel Exact Online
-This package is a Laravel wrapper around the Exact Online PHP API by Picqer 
+
+This package is a Laravel wrapper around the Exact Online PHP API by Picqer
 (https://github.com/picqer/exact-php-client). It provides routes and a controller out of the box to connect
 your Laravel app with an Exact Online app. It also provides a Facade which is chainable to make requests
 to the API easily. Authorisation and refresh tokens are saved automatically.
@@ -9,10 +10,11 @@ your platform need access to Exact Online for a single user! This set of code ma
 a single Exact Online user's administration.
 
 ## Installation
+
 Require the package
 
 ```
-composer require websmurf/laravel-exact-online
+composer require fivefm/laravel-exact-online
 ```
 
 Because of the auto package discovery feature Laravel > 5.5 has, the ServiceProvider and Facades are automatically registered.
@@ -21,14 +23,14 @@ Add the Facade to your config/app.php
 
 ```
 ...
-'ExactOnline' => Websmurf\LaravelExactOnline\LaravelExactOnlineFacade::class,
+'ExactOnline' => Fivefm\LaravelExactOnline\LaravelExactOnlineFacade::class,
 ...
 ```
 
 Followed by this, publish the resources (views, config, etc.)
 
 ```
-php artisan vendor:publish --provider="Websmurf\LaravelExactOnline\Providers\LaravelExactOnlineServiceProvider"
+php artisan vendor:publish --provider="Fivefm\LaravelExactOnline\Providers\LaravelExactOnlineServiceProvider"
 ```
 
 While developing this package, you might want to use the `--force` flag on this command to overwrite previous files.
@@ -49,13 +51,14 @@ EXACT_DIVISION=
 ```
 
 ## Multiuser support
+
 Out of the box this plugin stores the exact keys inside a JSON file. This means every user uses the same credentials. If you would like to give your users the opportunity to make individual connections you can do so by setting the following parameter inside your .env file:
 
 ```
 EXACT_MULTI_USER=true
 ```
 
-Sidenote: There's no migration written for this feature yet. Feel free to do so. In the meantime you should add these changes to your user  migration:
+Sidenote: There's no migration written for this feature yet. Feel free to do so. In the meantime you should add these changes to your user migration:
 
 ```php
 $table->text('exact_accessToken')->nullable();
@@ -73,7 +76,8 @@ protected $fillable = [
 ```
 
 ## How to use connect Laravel & Exact Online
-As said this package provides the route and controller to easily connect your  Exact App with 
+
+As said this package provides the route and controller to easily connect your Exact App with
 your Laravel project. You may overwrite the routes in you routes/web.php file, I even insist on
 doing so because the routes are `not protected` by default!
 
@@ -81,15 +85,18 @@ You may also edit the views to your liking, after publishing they can be found u
 `/views/vendor/laravel-exact-online/` in your resources path.
 
 ##### Step 1: connect & authorise
+
 Visit http://your-project.local/exact/connect, you will be presented a submit button to go to
-Exact Online. Once there, login and approve the app. After this you will be returned do 
+Exact Online. Once there, login and approve the app. After this you will be returned do
 http://your-project.local/exact/oauth, this route takes care of saving the needed tokens for
 future requests.
 
 ##### Step 2: use the Facade
+
 That's it, you're now ready to use the package.
 
 ## How to use the API
+
 The package by Picqer requires you to provide a valid connection parameter to each resource
 you are about to use. This is done by a big piece of code which requires adding tokens. In
 the ServiceProvider of this package we've made a singleton that does all this for you:
@@ -111,7 +118,7 @@ dd($account->get());
 Using Dependency Injection, you can request an instance that already creates connection instance for you:
 
 ```php
-function handle (\Websmurf\LaravelExactOnline\LaravelExactOnline $exactOnline) {
+function handle (\Fivefm\LaravelExactOnline\LaravelExactOnline $exactOnline) {
     // List all accounts
     $exactOnline->Account()->get();
 

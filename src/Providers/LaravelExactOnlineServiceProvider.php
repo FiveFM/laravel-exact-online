@@ -1,10 +1,10 @@
 <?php
 
-namespace Websmurf\LaravelExactOnline\Providers;
+namespace Fivefm\LaravelExactOnline\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Picqer\Financials\Exact\Connection;
-use Websmurf\LaravelExactOnline\LaravelExactOnline;
+use Fivefm\LaravelExactOnline\LaravelExactOnline;
 
 class LaravelExactOnlineServiceProvider extends ServiceProvider
 {
