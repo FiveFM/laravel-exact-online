@@ -2,55 +2,38 @@
 
 namespace Fivefm\LaravelExactOnline\Http\Controllers;
 
-use App\User;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\URL;
-use Fivefm\LaravelExactOnline\LaravelExactOnline;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
+use Fivefm\LaravelExactOnline\LaravelExactOnline;
 
 class LaravelExactOnlineController extends Controller
 {
-    /**
-     * Connect Exact app
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function appConnect()
     {
         return view('laravelexactonline::connect');
     }
 
-    /**
-     * Authorize to Exact
-     * Sends an oAuth request to the Exact App to get tokens
-     */
     public function appAuthorize()
     {
         $connection = app()->make('Exact\Connection');
-        return ["url" => $connection->getAuthUrl()];
+        return ['url' => $connection->getAuthUrl()];
     }
 
-    /**
-     * Exact Callback
-     * Saves the authorisation and refresh tokens
-     */
     public function appCallback()
     {
+        // Retrieve the user ID from the session
+        $userId = session('user_id');
+        if (!$userId) {
+            abort(401, 'User session expired. Please restart the authorization process.');
+        }
 
-
-        //        $id = Crypt::decryptString(request()->get('user'));
-        Auth::shouldUse('web');
-        Auth::loginUsingId(request()->get('user'));
+        Auth::loginUsingId($userId);
 
         $config = LaravelExactOnline::loadConfig();
-
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
-        $connection = app()->make('Exact\Connection');
-        session(['user' => request()->get('user')]);
         return redirect()->route('exact.form');
-        //        return redirect("easykas://return");
     }
 }
