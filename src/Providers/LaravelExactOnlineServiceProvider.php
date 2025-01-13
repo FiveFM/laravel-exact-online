@@ -43,6 +43,7 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
             $config = LaravelExactOnline::loadConfig();
 
             $connection = new \Picqer\Financials\Exact\Connection();
+            dd($connection);
             //            $rand = Crypt::encryptString(Auth::user()->id);
             $connection->setRedirectUrl(route('exact.callback'));
             $connection->setExactClientId(config('laravel-exact-online.exact_client_id'));

@@ -37,14 +37,11 @@ class LaravelExactOnlineController extends Controller
      */
     public function appCallback()
     {
-
-
         //        $id = Crypt::decryptString(request()->get('user'));
         Auth::shouldUse('web');
         Auth::loginUsingId(request()->get('user'));
 
         $config = LaravelExactOnline::loadConfig();
-        dd($config);
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
