@@ -1,11 +1,11 @@
 <?php
 
-namespace Fivefm\LaravelExactOnline\Http\Controllers;
+namespace Websmurf\LaravelExactOnline\Http\Controllers;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Fivefm\LaravelExactOnline\LaravelExactOnline;
+use Websmurf\LaravelExactOnline\LaravelExactOnline;
 use Illuminate\Support\Facades\Auth;
 
 class LaravelExactOnlineController extends Controller
@@ -38,18 +38,20 @@ class LaravelExactOnlineController extends Controller
      */
     public function appCallback()
     {
-        Auth::shouldUse('web');
-        Auth::loginUsingId(request()->get('user'));
-
         $config = LaravelExactOnline::loadConfig();
-
         $config->authorisationCode = request()->get('code');
+
+        // Store first to avoid another redirect to exact online
         LaravelExactOnline::storeConfig($config);
 
-        $config_after = LaravelExactOnline::loadConfig();
-
         $connection = app()->make('Exact\Connection');
-        session(['user' => request()->get('user')]);
-        return redirect()->route('exact.form');
+
+        $config->exact_accessToken = serialize($connection->getAccessToken());
+        $config->exact_refreshToken = $connection->getRefreshToken();
+        $config->exact_tokenExpires = $connection->getTokenExpires() - 60;
+
+        LaravelExactOnline::storeConfig($config);
+
+        return view('laravelexactonline::connected', ['connection' => $connection]);
     }
 }
