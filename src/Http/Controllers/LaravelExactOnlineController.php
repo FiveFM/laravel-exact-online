@@ -42,17 +42,11 @@ class LaravelExactOnlineController extends Controller
         Auth::loginUsingId(request()->get('user'));
 
         $config = LaravelExactOnline::loadConfig();
-        dd([
-            'user' => request()->get('user'),
-            'code' => request()->get('code'),
-            'config_before' => $config
-        ]);
 
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
         $config_after = LaravelExactOnline::loadConfig();
-        dd(['config_after' => $config_after]);
 
         $connection = app()->make('Exact\Connection');
         session(['user' => request()->get('user')]);
