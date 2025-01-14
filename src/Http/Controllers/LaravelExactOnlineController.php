@@ -27,8 +27,9 @@ class LaravelExactOnlineController extends Controller
         $cookieTest = request()->cookie('easykas_session');
 
         \Log::info("COOKIE TEST: " . $cookieTest);
-        \Log::info("REQUEST: " . request()->all());
-        \Log::info("SESSION: " . session()->all());
+        \Log::info("REQUEST: " . json_encode(request()->all()));
+        \Log::info("SESSION: " . json_encode(session()->all()));
+        \Log::info("ALL COOKIES: " . json_encode(cookies()->all()));
 
         if ($cookieTest) {
             Auth::loginUsingId(decrypt($cookieTest));
