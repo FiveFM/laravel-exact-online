@@ -2,9 +2,13 @@
 
 namespace Fivefm\LaravelExactOnline\Http\Controllers;
 
+use App\User;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 use Fivefm\LaravelExactOnline\LaravelExactOnline;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class LaravelExactOnlineController extends Controller
 {
@@ -22,22 +26,19 @@ class LaravelExactOnlineController extends Controller
 
     public function appCallback()
     {
-        // Save the authorization code
+
+        //        $id = Crypt::decryptString(request()->get('user'));
+        Auth::shouldUse('web');
+        Auth::loginUsingId(request()->get('user'));
+
         $config = LaravelExactOnline::loadConfig();
-        $cookieTest = request()->cookie('easykas_session');
-
-        \Log::info("COOKIE TEST: " . $cookieTest);
-        \Log::info("REQUEST: " . json_encode(request()->all()));
-        \Log::info("SESSION: " . json_encode(session()->all()));
-        \Log::info("ALL COOKIES: " . json_encode(request->cookies->all()));
-
-        if ($cookieTest) {
-            Auth::loginUsingId(decrypt($cookieTest));
-        }
 
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
+        $connection = app()->make('Exact\Connection');
+        session(['user' => request()->get('user')]);
         return redirect()->route('exact.form');
+        //        return redirect("easykas://return");
     }
 }

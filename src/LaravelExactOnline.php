@@ -14,7 +14,6 @@ class LaravelExactOnline
      */
     public function __construct()
     {
-        \Log::info("CONSTRUCTING...");
         $this->connection = app()->make('Exact\Connection');
     }
 
@@ -29,6 +28,7 @@ class LaravelExactOnline
     public function __call($method, $arguments)
     {
         if (substr($method, 0, 10) == "connection") {
+
             $method = lcfirst(substr($method, 10));
 
             call_user_func([$this->connection, $method], implode(",", $arguments));
@@ -49,13 +49,7 @@ class LaravelExactOnline
     public static function loadConfig()
     {
         if (config('laravel-exact-online.exact_multi_user')) {
-            if (!Auth::check()) {
-                $exact = new \App\Exact();
-            } else {
-                $exact = Auth::user()?->exact ?? new \App\Exact();
-            }
-
-            return $exact;
+            return Auth::user()->exact == null ? new \App\Exact() : Auth::user()->exact;
         } else {
             return (object)json_decode(
                 File::get(
@@ -66,13 +60,13 @@ class LaravelExactOnline
         }
     }
 
-    public static function storeConfig($config): void
+    public static function storeConfig($config)
     {
         if (config('laravel-exact-online.exact_multi_user')) {
-            $config->save();
-            return;
+            Auth::user()->exact()->save($config);
+        } else {
+            $file = storage_path('exact.api.json');
+            File::put($file, json_encode($config));
         }
-
-        Storage::put('exact.api.json', json_encode($config));
     }
 }
