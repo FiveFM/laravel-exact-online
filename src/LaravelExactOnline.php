@@ -48,6 +48,7 @@ class LaravelExactOnline
 
     public static function loadConfig()
     {
+        \Log::info("LOADING CONFIG...");
         if (config('laravel-exact-online.exact_multi_user')) {
             return Auth::user()->exact == null ? new \App\Exact() : Auth::user()->exact;
         } else {

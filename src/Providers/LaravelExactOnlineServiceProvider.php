@@ -22,15 +22,14 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
 
     public function register()
     {
+        \Log::info("REGISTERING...");
         $this->app->alias(LaravelExactOnline::class, 'laravel-exact-online');
 
         $this->app->singleton('Exact\Connection', function () {
             $config = LaravelExactOnline::loadConfig();
 
             $connection = new \Picqer\Financials\Exact\Connection();
-            $connection->setRedirectUrl(route('exact.callback', [
-                'state' => encrypt(json_encode(['user_id' => Auth::user()->id])),
-            ]));
+            $connection->setRedirectUrl(route('exact.callback'));
             $connection->setExactClientId(config('laravel-exact-online.exact_client_id'));
             $connection->setExactClientSecret(config('laravel-exact-online.exact_client_secret'));
             $connection->setBaseUrl('https://start.exactonline.' . config('laravel-exact-online.exact_country_code'));

@@ -23,30 +23,11 @@ class LaravelExactOnlineController extends Controller
 
     public function appCallback()
     {
-        \Log::info('Session Data:', request()->get('state'));
-
-        if (request()->get('state') === null) {
-            \Log::error('OAuth state missing. Session might not be preserved.');
-            abort(403, 'Session invalid or expired');
-        }
-
-        $decodedState = json_decode(decrypt(request()->get('state')), true);
-
-        if (!$decodedState || !isset($decodedState['user_id'])) {
-            \Log::error('Invalid state: ' . $decodedState);
-            abort(401, 'User not logged in');
-        }
-
-        $userId = $decodedState['user_id'];
-
-        // Log the user in using the user ID
-        Auth::loginUsingId($userId);
-
-        // Clear the state from the session to prevent reuse
-        session()->forget('oauth_state');
-
+        \Log::info("CALLBACK...");
         // Save the authorization code
         $config = LaravelExactOnline::loadConfig();
+        \Log::info("CONFIG: " . json_encode($config));
+        \Log::info()
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
