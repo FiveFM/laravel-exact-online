@@ -31,6 +31,11 @@ class LaravelExactOnlineController extends Controller
         ]));
         session(['oauth_state' => $state]); // Store the state in the session for validation
 
+        \Log::info(json_encode([
+            'user_id' => $userId,
+            'timestamp' => now()->timestamp,
+        ]));
+        
         // Append the state to the auth URL
         $authUrl = $connection->getAuthUrl() . '&state=' . urlencode($state);
 
