@@ -22,9 +22,15 @@ class LaravelExactOnlineController extends Controller
 
 
     public function appCallback()
-    {   
+    {
         \Log::info(session()->all());
+
         // Decrypt the state to get the original data
+        if (session('oauth_state') === null) {
+            \Log::error('No state found');
+            abort(403, 'User not found in session');
+        }
+
         $decodedState = json_decode(decrypt(session('oauth_state')), true);
 
         if (!$decodedState || !isset($decodedState['user_id'])) {
