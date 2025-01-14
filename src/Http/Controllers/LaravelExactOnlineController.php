@@ -22,12 +22,13 @@ class LaravelExactOnlineController extends Controller
 
 
     public function appCallback()
-    {
+    {   
+        \Log::info(session()->all());
         // Decrypt the state to get the original data
-        $decodedState = json_decode(decrypt(session('stoauth_stateate')), true);
+        $decodedState = json_decode(decrypt(session('oauth_state')), true);
 
         if (!$decodedState || !isset($decodedState['user_id'])) {
-            \Log::error('Invalid state: ' . $state);
+            \Log::error('Invalid state: ' . $decodedState);
             abort(401, 'User not logged in');
         }
 
