@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\URL;
 use Fivefm\LaravelExactOnline\LaravelExactOnline;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Cookie;
 
 class LaravelExactOnlineController extends Controller
 {
@@ -25,9 +26,9 @@ class LaravelExactOnlineController extends Controller
 
     public function appCallback()
     {
-        $userId = session('exact_user_id');
+        $userId = request()->cookie('exact_user_id');
         if (!$userId) {
-            abort(400, 'User ID is missing.');
+            abort(400, 'User ID is missing or cookie is invalid.');
         }
 
         Auth::shouldUse('web');
@@ -36,9 +37,6 @@ class LaravelExactOnlineController extends Controller
         $config = LaravelExactOnline::loadConfig();
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
-
-        $connection = app()->make('Exact\Connection');
-        session(['user' => $userId]);
 
         return redirect()->route('exact.form');
     }
