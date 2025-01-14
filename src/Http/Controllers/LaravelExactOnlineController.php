@@ -24,7 +24,7 @@ class LaravelExactOnlineController extends Controller
     public function appCallback()
     {
         \Log::info('Session Data:', session()->all());
-        \Log::info('Request Cookies:', request()->cookies->all());
+        \Log::info('Request Cookies:', [request()->cookies()->all()]);
         \Log::info('easykas_session:', cookie('easykas_session'));
 
         if (session('oauth_state') === null) {
