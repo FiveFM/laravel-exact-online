@@ -4,6 +4,7 @@ namespace Fivefm\LaravelExactOnline\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Fivefm\LaravelExactOnline\LaravelExactOnline;
+use Illuminate\Support\Facades\Auth;
 
 class LaravelExactOnlineServiceProvider extends ServiceProvider
 {
