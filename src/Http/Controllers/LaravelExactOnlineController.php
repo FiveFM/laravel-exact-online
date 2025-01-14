@@ -23,14 +23,14 @@ class LaravelExactOnlineController extends Controller
             \Log::error('User not logged in');
             return redirect()->route('exact.verify')->withErrors('Session expired. Please start again.');
         }
-        
+
         // Generate and store the state
         $state = encrypt(json_encode([
             'user_id' => $userId,
             'timestamp' => now()->timestamp,
         ]));
         session(['oauth_state' => $state]); // Store the state in the session for validation
-
+        
         // Append the state to the auth URL
         $authUrl = $connection->getAuthUrl() . '&state=' . urlencode($state);
 
