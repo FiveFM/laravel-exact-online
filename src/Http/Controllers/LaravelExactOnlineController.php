@@ -23,22 +23,23 @@ class LaravelExactOnlineController extends Controller
         return ['url' => $connection->getAuthUrl()];
     }
 
-
     public function appCallback()
     {
+        $userId = session('exact_user_id');
+        if (!$userId) {
+            abort(400, 'User ID is missing.');
+        }
 
-        //        $id = Crypt::decryptString(request()->get('user'));
         Auth::shouldUse('web');
-        Auth::loginUsingId(request()->get('user'));
+        Auth::loginUsingId($userId);
 
         $config = LaravelExactOnline::loadConfig();
-
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
         $connection = app()->make('Exact\Connection');
-        session(['user' => request()->get('user')]);
+        session(['user' => $userId]);
+
         return redirect()->route('exact.form');
-        //        return redirect("easykas://return");
     }
 }
