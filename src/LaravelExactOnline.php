@@ -28,10 +28,7 @@ class LaravelExactOnline
      */
     public function __call($method, $arguments)
     {
-        \Log::info("CALLING METHOD: " . $method);
-        \Log::info("ARGUMENTS: " . json_encode($arguments));
         if (substr($method, 0, 10) == "connection") {
-
             $method = lcfirst(substr($method, 10));
 
             call_user_func([$this->connection, $method], implode(",", $arguments));
@@ -51,21 +48,15 @@ class LaravelExactOnline
 
     public static function loadConfig()
     {
-        \Log::info("LOADING CONFIG...");
         if (config('laravel-exact-online.exact_multi_user')) {
-            \Log::info("MULTI USER...");
-            $exact = null;
             if (!Auth::check()) {
-                \Log::info("NO AUTH...");
                 $exact = new \App\Exact();
             } else {
-                \Log::info("AUTH...");
                 $exact = Auth::user()?->exact ?? new \App\Exact();
             }
-            \Log::info("EXACT: " . json_encode($exact));
+
             return $exact;
         } else {
-            \Log::info("SINGLE USER...");
             return (object)json_decode(
                 File::get(
                     storage_path('exact.api.json')

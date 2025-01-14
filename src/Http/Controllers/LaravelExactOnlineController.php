@@ -4,7 +4,6 @@ namespace Fivefm\LaravelExactOnline\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Fivefm\LaravelExactOnline\LaravelExactOnline;
 
 class LaravelExactOnlineController extends Controller
@@ -23,11 +22,18 @@ class LaravelExactOnlineController extends Controller
 
     public function appCallback()
     {
-        \Log::info("CALLBACK...");
         // Save the authorization code
         $config = LaravelExactOnline::loadConfig();
-        \Log::info("CONFIG: " . json_encode($config));
-        \Log::info("REQUEST: " . json_encode(request()->all()));
+        $cookieTest = request()->cookie('easykas_session');
+
+        \Log::info("COOKIE TEST: " . $cookieTest);
+        \Log::info("REQUEST: " . request()->all());
+        \Log::info("SESSION: " . session()->all());
+
+        if ($cookieTest) {
+            Auth::loginUsingId(decrypt($cookieTest));
+        }
+
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 

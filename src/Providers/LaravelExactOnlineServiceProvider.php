@@ -22,7 +22,6 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
 
     public function register()
     {
-        \Log::info("REGISTERING...");
         $this->app->alias(LaravelExactOnline::class, 'laravel-exact-online');
 
         $this->app->singleton('Exact\Connection', function () {
