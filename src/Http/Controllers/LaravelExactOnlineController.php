@@ -27,7 +27,7 @@ class LaravelExactOnlineController extends Controller
         // Save the authorization code
         $config = LaravelExactOnline::loadConfig();
         \Log::info("CONFIG: " . json_encode($config));
-        \Log::info()
+        \Log::info("REQUEST: " . json_encode(request()->all()));
         $config->authorisationCode = request()->get('code');
         LaravelExactOnline::storeConfig($config);
 
