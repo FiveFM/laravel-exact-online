@@ -21,9 +21,9 @@ class LaravelExactOnlineController extends Controller
 
         if (!$userId) {
             \Log::error('User not logged in');
-            return redirect()->route('exact.connect')->withErrors('Session expired. Please start again.');
+            return redirect()->route('exact.verify')->withErrors('Session expired. Please start again.');
         }
-
+        
         // Generate and store the state
         $state = encrypt(json_encode([
             'user_id' => $userId,
@@ -44,7 +44,7 @@ class LaravelExactOnlineController extends Controller
 
         if (!$state || $state !== session('oauth_state')) {
             \Log::error('Invalid state: ' . $state);
-            return redirect()->route('exact.connect')->withErrors('Session expired. Please start again.');
+            return redirect()->route('exact.verify')->withErrors('Session expired. Please start again.');
         }
 
         // Decrypt the state to get the original data
@@ -52,7 +52,7 @@ class LaravelExactOnlineController extends Controller
 
         if (!$decodedState || !isset($decodedState['user_id'])) {
             \Log::error('Invalid state: ' . $state);
-            return redirect()->route('exact.connect')->withErrors('Session expired. Please start again.');
+            return redirect()->route('exact.verify')->withErrors('Session expired. Please start again.');
         }
 
         $userId = $decodedState['user_id'];
