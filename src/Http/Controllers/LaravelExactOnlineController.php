@@ -30,8 +30,8 @@ class LaravelExactOnlineController extends Controller
     {
         $ses = new Session();
         Log::info($ses->get('user') ?? "User is er niet!");
-        Log::info(request()->all());
-        Log::info(session('user') ?? "Session is er niet!");
+        $login = Auth::loginUsingId($ses->get('user'));
+        Log::info($login);
         //        $id = Crypt::decryptString(request()->get('user'));
         $config = LaravelExactOnline::loadConfig();
 
@@ -39,7 +39,6 @@ class LaravelExactOnlineController extends Controller
         LaravelExactOnline::storeConfig($config);
 
         $connection = app()->make('Exact\Connection');
-        session(['user' => request()->get('user')]);
         return redirect()->route('exact.form');
         //        return redirect("easykas://return");
     }
