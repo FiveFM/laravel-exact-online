@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class LaravelExactOnlineController extends Controller
 {
@@ -27,8 +28,8 @@ class LaravelExactOnlineController extends Controller
 
     public function appCallback()
     {
-        session_start();
-        Log::info(request()->get('user') ?? "User is er niet!");
+        $ses = new Session();
+        Log::info($ses->get('user') ?? "User is er niet!");
         Log::info(request()->all());
         Log::info(session('user') ?? "Session is er niet!");
         //        $id = Crypt::decryptString(request()->get('user'));
