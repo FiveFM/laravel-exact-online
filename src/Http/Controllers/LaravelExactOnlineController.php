@@ -26,10 +26,8 @@ class LaravelExactOnlineController extends Controller
 
     public function appCallback()
     {
+        Log::info(request()->get('code'));
         //        $id = Crypt::decryptString(request()->get('user'));
-        Auth::shouldUse('web');
-        Auth::loginUsingId(request()->get('user'));
-
         $config = LaravelExactOnline::loadConfig();
 
         $config->authorisationCode = request()->get('code');
