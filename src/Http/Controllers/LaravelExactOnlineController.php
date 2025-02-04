@@ -27,6 +27,7 @@ class LaravelExactOnlineController extends Controller
     public function appCallback()
     {
         Log::info(request()->get('code'));
+        Log::info(session('user') ?? "Session is er niet!");
         //        $id = Crypt::decryptString(request()->get('user'));
         $config = LaravelExactOnline::loadConfig();
 
