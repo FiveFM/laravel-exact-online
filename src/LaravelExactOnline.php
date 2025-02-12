@@ -4,6 +4,8 @@ namespace Fivefm\LaravelExactOnline;
 
 use File;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Exact;
 
 class LaravelExactOnline
 {
@@ -49,7 +51,9 @@ class LaravelExactOnline
     public static function loadConfig()
     {
         if (config('laravel-exact-online.exact_multi_user')) {
-            return Auth::user()->exact == null ? new \App\Exact() : Auth::user()->exact;
+            $exact = Auth::user()->exact == null ? new Exact() : Auth::user()->exact;
+            Log::debug($exact);
+            return $exact;
         } else {
             return (object)json_decode(
                 File::get(
