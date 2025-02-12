@@ -35,6 +35,8 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
             $connection->setRedirectUrl(route('exact.callback'));
             $connection->setExactClientId(config('laravel-exact-online.exact_client_id'));
             $connection->setExactClientSecret(config('laravel-exact-online.exact_client_secret'));
+            Log::debug(config('laravel-exact-online.exact_client_id'));
+            Log::debug(config('laravel-exact-online.exact_client_secret'));
             $connection->setBaseUrl('https://start.exactonline.' . config('laravel-exact-online.exact_country_code'), ['user' => Auth::user()->id]);
 
             if (isset($config->company_id)) {
