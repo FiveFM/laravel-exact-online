@@ -67,6 +67,7 @@ class LaravelExactOnline
     public static function storeConfig($config)
     {
         if (config('laravel-exact-online.exact_multi_user')) {
+            Log::debug($config);
             Auth::user()->exact()->save($config);
         } else {
             $file = storage_path('exact.api.json');
